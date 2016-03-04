@@ -18,15 +18,17 @@ http://dev.eyln.com
 
 ## 概要
 
-processing.jsのtint()を高速化して、その他一部関数のサポートを追加したものです。
+processing.jsのtint()を高速化して、その他一部関数のサポートを追加したものです。fastといっても他のライブラリより速いとかそういうことではなく、もともとのprocessing.js本体とくらべて高速化、という意味です。
 
-fastといっても他のライブラリより速いとかそういうことではなく、もともとのprocessing.js本体とくらべて高速化、という意味です。
+p5.jsもとてもよいのですが、Processingで書かれたJava構文のクラスをそのまま使ったりするには、processing.jsの方が都合がよいです。ただオリジナルのprocessing.jsはtint()がかなり遅いため、画像の透明度を変えたりしながら使うのは苦手。
 
-processing.jsの最新版だとモバイル端末でのタッチの挙動がおかしかったので、1.4.1から派生しています。
+そこでprocessing.fast.jsでは、tint(255, 0～255)のケースでglobalAlphaを使って高速化しています。また、ある画像に対して同じtint()値であれば、tint(128, 64, 64, 100)のような色替えをおこなったときも、１つ前に作った画像をキャッシュして使い回すことで動作が軽くなるようにしています。※でも毎回tint()値を変えたり、大量にtint()設定する画像があると遅くなったり、メモリに乗らなかったりしそうです。
 
-blendMode(ADD)で加算描画したりできます。
+なお、processing.jsの最新版だとモバイル端末でのタッチの挙動がおかしかったので、1.4.1から派生しています。
 
-PC用にsize()指定後、iOS/Android端末でorientatiation(LANDSCAPE)にすると横持ち想定のキャンバス、orientation(PORTRATE)にすると縦持ち想定のキャンバスを作れます。smartTempleateのhtmlと組み合わせて使いますが、先に端末の向きをあわせておく必要があります。ちなみにorientation(AUTO)にすると現在の向きにあわせてフルスクリーンになります。
+追加機能としては、blendMode(ADD)で加算描画したりできます。
+
+あと、PC用にsize()指定後（JavaScriptモードでsize指定が必須なのです）、iOS/Android端末でorientatiation(LANDSCAPE)にすると横持ち想定のキャンバス、orientation(PORTRATE)にすると縦持ち想定のキャンバスを作れます。smartTempleateのhtmlと組み合わせて使いますが、先に端末の向きをあわせておく必要があります。ちなみにorientation(AUTO)にすると現在の向きにあわせてフルスクリーンになります。
 
 ## JavaScriptモードの追加方法
 
