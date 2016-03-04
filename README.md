@@ -24,6 +24,8 @@ JavaScriptでProcessingといえば「p5.js」もよいですね。ただ、Proc
 
 そこでprocessing.fast.jsでは、tint(255, 0～255)のケースでglobalAlphaを使って高速化しています。また、ある画像に対して同じtint()値であれば、tint(128, 64, 64, 100)のような色替えをおこなったときも、１つ前に作った画像をキャッシュして使い回すことで動作が軽くなるようにしています。※でも毎回tint()値を変えたり、大量にtint()設定する画像があると遅くなったり、メモリに乗らなかったりしそうです。
 
+![fastTemplate](https://raw.github.com/wiki/nryota/processing.fast.js/images/fastTemplate.jpg)
+
 なお、processing.jsの最新版だとモバイル端末でのタッチの挙動がおかしかったので、1.4.1から派生しています。
 
 追加機能としては、blendMode(ADD)で加算描画したりできます。
@@ -41,7 +43,7 @@ https://github.com/fjenett/javascript-mode-processing/blob/master/release/JavaSc
 
 ## 各テンプレートの違い
 
-下記サンプルの中にあるお好みの「templeate」フォルダをご自身の各スケッチにコピーしてご使用ください。
+下記サンプルの中にあるお好みの「templeate」フォルダをご自身の各スケッチにコピーして、JavaScriptモードでご使用ください。
 
 normalTemplate_js ... processing.js-1.4.1をそのまま使う、もともとのテンプレートです。
 
