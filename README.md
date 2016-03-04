@@ -20,7 +20,7 @@ http://dev.eyln.com
 
 processing.jsのtint()を高速化して、その他一部関数のサポートを追加したものです。fastといっても他のライブラリより速いとかそういうことではなく、もともとのprocessing.js本体とくらべて高速という意味です。
 
-JavaScriptでProcessingといえば「p5.js」もよいのですね。ただ、Processingで書かれたJava構文のクラスをそのまま使ったりするには、processing.jsの方が楽で都合がよかったりします。しかし、オリジナルのprocessing.jsはtint()がかなり遅いため、画像の透明度を変えたりしながら使うのは苦手。
+JavaScriptでProcessingといえば「p5.js」もよいですね。ただ、Processingで書かれたJava構文のクラスをそのまま使ったりするには、processing.jsの方が楽で都合がよかったりします。しかし、オリジナルのprocessing.jsはtint()がかなり遅いため、画像の透明度を変えたりしながら使うのは苦手。
 
 そこでprocessing.fast.jsでは、tint(255, 0～255)のケースでglobalAlphaを使って高速化しています。また、ある画像に対して同じtint()値であれば、tint(128, 64, 64, 100)のような色替えをおこなったときも、１つ前に作った画像をキャッシュして使い回すことで動作が軽くなるようにしています。※でも毎回tint()値を変えたり、大量にtint()設定する画像があると遅くなったり、メモリに乗らなかったりしそうです。
 
