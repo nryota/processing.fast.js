@@ -39,6 +39,8 @@ https://github.com/fjenett/javascript-mode-processing/blob/master/release/JavaSc
 
 ## 各テンプレートの違い
 
+下記サンプルの中にあるお好みの「templeate」フォルダをご自身の各スケッチにコピーしてご使用ください。
+
 normalTemplate_js ... processing.js-1.4.1をそのまま使う、もともとのテンプレートです。
 
 fastTemplate_js ... processing.fast.jsを使うテンプレートです。
