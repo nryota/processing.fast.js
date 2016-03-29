@@ -30,7 +30,7 @@ JavaScriptでProcessingといえば「p5.js」もよいですね。ただ、Proc
 
 追加機能としては、blendMode(ADD)で加算描画したりできます。
 
-Table, TableRow, loadTable(), saveTable()についても簡易的に対応しました（""で囲ったcsvは未対応）。loadString(), saveString()を内部的に使うのでブラウザのローカルキャッシュに保存したり読み込んだりします。
+Table, TableRow, loadTable(), saveTable()についても簡易的に対応しました（""で囲ったcsvは未対応）。loadString(), saveString()を内部的に使うのでブラウザのローカルストレージ（キャッシュ）に保存したり読み込んだりします。
 
 あと、PC用にsize()指定後（JavaScriptモードでsize指定が必須なのです）、iOS/Android端末でorientatiation(LANDSCAPE)にすると横持ち想定のキャンバス、orientation(PORTRATE)にすると縦持ち想定のキャンバスを作れます。smartTempleateのhtmlと組み合わせて使いますが、先に端末の向きをあわせておく必要があります。ちなみにorientation(AUTO)にすると現在の向きにあわせてフルスクリーンになります。
 
