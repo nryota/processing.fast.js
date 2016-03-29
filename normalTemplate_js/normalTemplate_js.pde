@@ -12,7 +12,7 @@ void draw() {
   background(60, 60, 160);
 
   textSize(30);
-  text("processing.fast.js", 40, 60);
+  text("processing.js", 40, 60);
   text("FPS " + nf(frameRate, 2, 1), 40, 100);
 
   //blendMode(ADD);
