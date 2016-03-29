@@ -13,6 +13,11 @@ n_ryota's hack
 * add blendMode()
 * add orientation(AUTO or LANDSCAPE or PORTRATE) for iOS, Android
 * add fullScreen() == orientation(AUTO)
+* add Table, TableRow, loadTable(), saveTable()
+ 
+Before: [normalTemplate_js sample](http://dev.eyln.com/GitHub/processing.fast.js/normalTemplate_js/)
+
+After: [fastTemplate_js sample](http://dev.eyln.com/GitHub/processing.fast.js/fastTemplate_js/)
 
 http://dev.eyln.com
 
@@ -25,6 +30,9 @@ JavaScriptでProcessingといえば「p5.js」もよいですね。ただ、Proc
 そこでprocessing.fast.jsでは、tint(255, 0～255)のケースでglobalAlphaを使って高速化しています。また、ある画像に対して同じtint()値であれば、tint(128, 64, 64, 100)のような色替えをおこなったときも、１つ前に作った画像をキャッシュして使い回すことで動作が軽くなるようにしています。※でも毎回tint()値を変えたり、大量にtint()設定する画像があると遅くなったり、メモリに乗らなかったりしそうです。
 
 ![fastTemplate](https://raw.github.com/wiki/nryota/processing.fast.js/images/fastTemplate.jpg)
+
+* Before: [normalTemplate_js sample](http://dev.eyln.com/GitHub/processing.fast.js/normalTemplate_js/)
+* After: [fastTemplate_js sample](http://dev.eyln.com/GitHub/processing.fast.js/fastTemplate_js/)
 
 なお、processing.jsの最新版だとモバイル端末でのタッチの挙動がおかしかったので、1.4.1から派生しています。
 
