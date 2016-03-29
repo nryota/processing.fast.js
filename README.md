@@ -1,6 +1,6 @@
 # processing.fast.js
 
-processing.js-1.4.1 + n_ryota's hack v0.5.0
+processing.js-1.4.1 + n_ryota's hack v0.5.2
 a port of the Processing visualization language
 
 Processing.js is licensed under the MIT License, see LICENSE.
