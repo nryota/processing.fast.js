@@ -1,7 +1,7 @@
 /***
 
     processing.fast.js
-    processing.js-1.4.1 + n_ryota's hack v0.5.0
+    processing.js-1.4.1 + n_ryota's hack v0.5.2
     a port of the Processing visualization language
 
     Processing.js is licensed under the MIT License, see LICENSE.
@@ -14,6 +14,7 @@
 	  add blendMode()
 	  add orientation(AUTO or LANDSCAPE or PORTRATE) for iOS, Android
 	  add fullScreen() == orientation(AUTO)
+	  add Table, TableRow, loadTable(), saveTable() -> use load/saveStrings()
     http://dev.eyln.com
 
 ***/
@@ -697,6 +698,200 @@
     }
     return HashMap
   }();
+
+  // --- n_ryota hack [
+  //---------------------------
+  // class Table
+  Table = function() {
+    this._header = [];
+    this._rows = [];
+  };
+
+  Table.prototype._load = function(p, filename, options) {
+    this.clearRows();
+    if(options===undef) options = "";
+
+    var strs = p.loadStrings(filename);
+    if(!strs) return false;
+
+    var sep = this.getSeparater(options);
+    var isHeader = (options.indexOf("header") >= 0);
+
+    this._header = [];
+    this._rows = [];
+    var columnsMax = 0;
+    for(var i=0; i<strs.length; i++) {
+      if(strs[i].trim().length == 0 || strs[i].startsWith("#")) {
+        continue;
+      }
+      var columns = strs[i].split(sep);
+      if(i==0 && isHeader) {
+        for(var j=0; j<columns.length; j++) {
+          this._header[columns[j]] = j;
+        }
+      } else {
+        this._rows.push(new TableRow(this, columns));
+      }
+      if(columns.length > columnsMax) columnsMax = columns.length;
+    }
+    if(!isHeader) {
+     for(var i=0; i<columnsMax; i++) {
+       this._header[i] = i;
+     }
+    }
+    return true;
+  }
+
+  Table.prototype._save = function(p, filename, options) {
+    if(this._rows==null) return false;
+    if(options===undef) options = "";
+
+    var sep = this.getSeparater(options);
+    var strs = [];
+
+    if(Object.keys(this._header).length > 0 /*&& options.indexOf("header") >= 0*/) {
+      var s = null;
+      for(key in this._header){
+        if(s==null) s = "";
+        else s += sep;
+        s += key;
+      }
+      strs.push(s);
+    }
+
+    for(var i=0; i<this._rows.length; i++) {
+      var row = this._rows[i];
+      strs.push(row._columns.join(sep));
+    }
+    p.saveStrings(filename, strs);
+    return true;
+  }
+
+  Table.prototype.getSeparater = function(options) {
+    if(options === undef) { return ","; }
+    else if(options.indexOf("csv") >= 0) { return ","; }
+    else if(options.indexOf("tsv") >= 0) { return "\t"; }
+    else { return ","; }
+  }
+
+  Table.prototype.addColumn = function(title) {
+    if(this._header.indexOf(title) < 0) {
+      this._header[title] = Object.keys(this._header).length;
+    }
+  }
+
+  Table.prototype.removeColumn = function(title) {
+    i = this._header.indexOf(title);
+    if(i >= 0) {
+      this._header.splice(i, 1);
+      // ToDo: remove this._rows ?
+    }
+  }
+
+  Table.prototype.getColumnCount = function() {
+    if(this._header==null) return 0;
+    return this._header.length;
+  }
+
+  Table.prototype.getColumnIndex = function(name) {
+    if(this._header == null) return -1;
+    return this._header[name];
+  }
+
+  Table.prototype.getRowCount = function() {
+    if(this._rows==null) return 0;
+    return this._rows.length;
+  }
+
+  Table.prototype.lastRowIndex = function() {
+    return this.getRowCount() - 1;
+  }
+
+  Table.prototype.clearRows = function() {
+    if(this._rows!=null) this._rows = [];
+    //if(this._header!=null) this._header = [];
+  }
+
+  Table.prototype.addRow = function(row) {
+    var newRow = new TableRow(this, null);
+    newRow.columns =  row.columns.concat();
+    this._rows.push(newRow);
+    return newRow;
+  }
+
+  Table.prototype.addRow = function() {
+    var newRow = new TableRow(this, null);
+    this._rows.push(newRow);
+    return newRow;
+  }
+
+  Table.prototype.removeRow = function(index) {
+    if(this._rows!=null) {
+      this._rows.splice(index, 1);
+    }
+  }
+
+  Table.prototype.getRow = function(index) {
+    if(this._rows==null) return null;
+    return this._rows[index];
+  }
+
+  Table.prototype.rows = function() {
+    return this._rows;
+  }
+
+  Table.prototype.getString = function(row, columnName) { return this.getRow(row).getString(columnName); }
+  Table.prototype.setString = function(row, columnName, value) { this.getRow(row).setString(columnName, value); }
+  Table.prototype.getInt = function(row, columnName) { return this.getRow(row).getInt(columnName); }
+  Table.prototype.setInt = function(row, columnName, value) { this.getRow(row).setInt(columnName, value); }
+  Table.prototype.getFloat = function(row, columnName) { return this.getRow(row).getFloat(columnName); }
+  Table.prototype.setFloat = function(row, columnName, value) { this.getRow(row).setFloat(columnName, value); }
+  //getStringColumn()
+  //findRow()
+  //findRows()
+  //matchRow()
+  //matchRows()
+  //removeTokens()
+  //trim()
+
+  //---------------------------
+  // class TableRow
+  TableRow = function(table, columns) {
+    this._table = table;
+    this._columns = columns;
+  };
+
+  TableRow.prototype.getString = function(name) {
+    var id = this._table.getColumnIndex(name);
+    if(this._columns==null || id < 0 || id >= this._columns.length) return "";
+    else return this._columns[id];
+  }
+
+  TableRow.prototype.setString = function(name, value) {
+    var id = this._table.getColumnIndex(name);
+    if(id < 0) {
+      this._table.addColumn(name);
+      id = this._table.getColumnIndex(name);
+      if(id < 0) return;
+    }
+    if(this._columns==null) {
+      this._columns = [];
+    }
+    if(id >= this._columns.length) {
+      var len = this._columns.length;
+      for(var i=len; i<id; i++) {
+        this._columns.push("");
+      }
+    }
+    this._columns[id] = value;
+  }
+
+  TableRow.prototype.getInt = function(name) { return parseInt(this.getString(name)); }
+  TableRow.prototype.setInt = function(name, value) { this.setString(name, Math.floor(value)); }
+  TableRow.prototype.getFloat = function(name) { return parseFloat(this.getString(name)); }
+  TableRow.prototype.setFloat = function(name, value) { this.setString(name, value); }
+  // --- n_ryota hack ]
+
   var PVector = function() {
     function PVector(x, y, z) {
       this.x = x || 0;
@@ -830,6 +1025,10 @@
   var defaultScope = new DefaultScope;
   defaultScope.ArrayList = ArrayList;
   defaultScope.HashMap = HashMap;
+  // --- n_ryota hack [
+  defaultScope.Table = Table;
+  defaultScope.TableRow = TableRow;
+  // --- n_ryota hack ]
   defaultScope.PVector = PVector;
   defaultScope.ObjectIterator = ObjectIterator;
   defaultScope.PConstants = PConstants;
@@ -7200,6 +7399,15 @@
         p.size(Math.floor(sw), Math.floor(sh), p.use3DContext ? PConstants.P3D : PConstants.P2D);
       }
     };
+    p.loadTable = function(filename, options) {
+      var table = new Table();
+      if(table._load(p, filename, options)) {
+        return table;
+      } else return null;
+    }
+    p.saveTable = function(table, filename, options) {
+      return table._save(p, filename, options);
+    }
     // --- n_ryota hack ]
 
     Drawing2D.prototype.image = function(img, x, y, w, h) {
@@ -8716,7 +8924,7 @@
     var names = ["abs", "acos", "alpha", "ambient", "ambientLight", "append",
       "applyMatrix", "arc", "arrayCopy", "asin", "atan", "atan2", "background", "beginCamera", "beginDraw", "beginShape", "bezier", "bezierDetail", "bezierPoint", "bezierTangent", "bezierVertex", "binary", "blend", "blendColor", "blit_resize", "blue", "box", "breakShape", "brightness", "camera", "ceil", "Character", "color", "colorMode", "concat", "constrain", "copy", "cos", "createFont", "createGraphics", "createImage", "cursor", "curve", "curveDetail", "curvePoint", "curveTangent", "curveTightness", "curveVertex", "day", "degrees", "directionalLight",
       // --- n_ryota hack [
-      "blendMode", "fullScreen", "orientation",
+      "blendMode", "fullScreen", "orientation", "loadTable", "saveTable",
       // --- n_ryota hack ]
       "disableContextMenu", "dist", "draw", "ellipse", "ellipseMode", "emissive", "enableContextMenu", "endCamera", "endDraw", "endShape", "exit", "exp", "expand", "externals", "fill", "filter", "floor", "focused", "frameCount", "frameRate", "frustum", "get", "glyphLook", "glyphTable", "green", "height", "hex", "hint", "hour", "hue", "image", "imageMode", "intersect", "join", "key", "keyCode", "keyPressed", "keyReleased", "keyTyped", "lerp", "lerpColor", "lightFalloff", "lights", "lightSpecular", "line", "link", "loadBytes", "loadFont", "loadGlyphs",
       "loadImage", "loadPixels", "loadShape", "loadXML", "loadStrings", "log", "loop", "mag", "map", "match", "matchAll", "max", "millis", "min", "minute", "mix", "modelX", "modelY", "modelZ", "modes", "month", "mouseButton", "mouseClicked", "mouseDragged", "mouseMoved", "mouseOut", "mouseOver", "mousePressed", "mouseReleased", "mouseScroll", "mouseScrolled", "mouseX", "mouseY", "name", "nf", "nfc", "nfp", "nfs", "noCursor", "noFill", "noise", "noiseDetail", "noiseSeed", "noLights", "noLoop", "norm", "normal", "noSmooth", "noStroke", "noTint", "ortho",
