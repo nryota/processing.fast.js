@@ -7360,10 +7360,10 @@
       }
       curContext.globalCompositeOperation = m;
     };
-    p.fullScreen = function() {
-      p.orientation(PConstants.AUTO);
+    p.fullScreen = function(aMode) {
+      p.orientation(PConstants.AUTO, aMode);
     };
-    p.orientation = function(mode) {
+    p.orientation = function(mode, aMode) {
       function getInnerWidth() {
         if(window.innerWidth) return window.innerWidth;
         else if(document.documentElement && document.documentElement.clientWidth != 0) {
@@ -7396,7 +7396,10 @@
           sw = p.min(w, h);
           sh = p.max(w, h);
         }
-        p.size(Math.floor(sw), Math.floor(sh), p.use3DContext ? PConstants.P3D : PConstants.P2D);
+        if(aMode === undef) {
+          aMode = p.use3DContext ? PConstants.P3D : PConstants.P2D;
+        }
+        p.size(Math.floor(sw), Math.floor(sh), aMode);
       }
     };
     p.loadTable = function(filename, options) {
