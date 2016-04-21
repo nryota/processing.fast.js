@@ -1,6 +1,6 @@
 # processing.fast.js
 
-processing.js-1.4.1 + n_ryota's hack v0.5.2
+processing.js-1.4.1 + n_ryota's hack v0.5.3
 a port of the Processing visualization language
 
 Processing.js is licensed under the MIT License, see LICENSE.
@@ -14,6 +14,7 @@ n_ryota's hack
 * add orientation(AUTO or LANDSCAPE or PORTRATE) for iOS, Android
 * add fullScreen() == orientation(AUTO)
 * add Table, TableRow, loadTable(), saveTable()
+* support P3D alpha
  
 Before: [normalTemplate_js sample](http://dev.eyln.com/GitHub/processing.fast.js/normalTemplate_js/)
 
@@ -35,8 +36,9 @@ JavaScriptでProcessingといえば「p5.js」もよいですね。ただ、Proc
 * After: [fastTemplate_js sample](http://dev.eyln.com/GitHub/processing.fast.js/fastTemplate_js/)
 
 なお、processing.jsの最新版だとモバイル端末でのタッチの挙動がおかしかったので、1.4.1から派生しています。
+P3DでnoLights()のときもalphaが効くように修正も。
 
-追加機能としては、blendMode(ADD)で加算描画したりできます。
+追加機能としては、P2DのときblendMode(ADD)で加算描画できます。
 
 Table, TableRow, loadTable(), saveTable()についても簡易的に対応しました（""で囲ったcsvは未対応）。loadString(), saveString()を内部的に使うのでブラウザのローカルストレージ（キャッシュ）に保存したり読み込んだりします。
 
