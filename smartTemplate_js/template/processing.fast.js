@@ -1,7 +1,7 @@
 /***
 
     processing.fast.js
-    processing.js-1.4.1 + n_ryota's hack v0.5.3
+    processing.js-1.4.1 + n_ryota's hack v0.5.4
     a port of the Processing visualization language
 
     Processing.js is licensed under the MIT License, see LICENSE.
@@ -16,6 +16,7 @@
 	  add fullScreen() == orientation(AUTO)
 	  add Table, TableRow, loadTable(), saveTable() -> use load/saveStrings()
 	  support P3D alpha
+	  support PVector.lerp()
     http://dev.eyln.com
 
 ***/
@@ -911,6 +912,14 @@
     PVector.angleBetween = function(v1, v2) {
       return Math.acos(v1.dot(v2) / (v1.mag() * v2.mag()))
     };
+    // --- n_ryota hack (ref processing.js v1.4.8) [
+    PVector.lerp = function(v1, v2, amt) {
+      // non-static lerp mutates object, but this version returns a new vector
+      var retval = new PVector(v1.x, v1.y, v1.z);
+      retval.lerp(v2, amt);
+      return retval;
+    };
+    // --- n_ryota hack ]
     PVector.prototype = {
       set: function(v, y, z) {
         if (arguments.length === 1) this.set(v.x || v[0] || 0, v.y || v[1] || 0, v.z || v[2] || 0);
@@ -989,6 +998,28 @@
           z = this.z;
         return new PVector(y * v.z - v.y * z, z * v.x - v.z * x, x * v.y - v.x * y)
       },
+      // --- n_ryota hack (ref processing.js v1.4.8) [
+      lerp: function(v_or_x, amt_or_y, z, amt) {
+        var lerp_val = function(start, stop, amt) {
+          return start + (stop - start) * amt;
+        };
+        var x, y;
+        if (arguments.length === 2) {
+          // given vector and amt
+          amt = amt_or_y;
+          x = v_or_x.x;
+          y = v_or_x.y;
+          z = v_or_x.z;
+        } else {
+          // given x, y, z and amt
+          x = v_or_x;
+          y = amt_or_y;
+        }
+        this.x = lerp_val(this.x, x, amt);
+        this.y = lerp_val(this.y, y, amt);
+        this.z = lerp_val(this.z, z, amt);
+      },
+      // --- n_ryota hack ]
       normalize: function() {
         var m = this.mag();
         if (m > 0) this.div(m)
