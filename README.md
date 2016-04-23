@@ -1,6 +1,6 @@
 # processing.fast.js
 
-processing.js-1.4.1 + n_ryota's hack v0.5.3
+processing.js-1.4.1 + n_ryota's hack v0.5.4
 a port of the Processing visualization language
 
 Processing.js is licensed under the MIT License, see LICENSE.
@@ -15,10 +15,14 @@ n_ryota's hack
 * add fullScreen() == orientation(AUTO)
 * add Table, TableRow, loadTable(), saveTable()
 * support P3D alpha
+* support PVector.lerp()
  
 Before: [normalTemplate_js sample](http://dev.eyln.com/GitHub/processing.fast.js/normalTemplate_js/)
 
 After: [fastTemplate_js sample](http://dev.eyln.com/GitHub/processing.fast.js/fastTemplate_js/)
+
+[download processing.fast.js](https://raw.githubusercontent.com/nryota/processing.fast.js/master/fastTemplate_js/template/processing.fast.js) 
+
 
 http://dev.eyln.com
 
@@ -35,8 +39,10 @@ JavaScriptでProcessingといえば「p5.js」もよいですね。ただ、Proc
 * Before: [normalTemplate_js sample](http://dev.eyln.com/GitHub/processing.fast.js/normalTemplate_js/)
 * After: [fastTemplate_js sample](http://dev.eyln.com/GitHub/processing.fast.js/fastTemplate_js/)
 
+processing.fast.js本体のみのダウンロードは [processing.fast.js 本体](https://raw.githubusercontent.com/nryota/processing.fast.js/master/fastTemplate_js/template/processing.fast.js) からどうぞ。
+
 なお、processing.jsの最新版だとモバイル端末でのタッチの挙動がおかしかったので、1.4.1から派生しています。
-P3DでnoLights()のときもalphaが効くように修正も。
+P3DでnoLights()のときもalphaが効くように修正したり、PVector.lerp()に対応したりも。
 
 追加機能としては、P2DのときblendMode(ADD)で加算描画できます。
 
